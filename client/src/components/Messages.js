@@ -1,19 +1,22 @@
 import { useMessages, useMessagesDispatch } from "./context/MessagesContext";
 import { useState, useEffect } from "react";
 
+import { useUser } from "./context/UserContext";
+import { useSelectedUser } from "./context/SelectedUserContext";
+
 function Messages() {
 
     const dispatch = useMessagesDispatch();
     const messagesState = useMessages();
     const messages = useMessages().messages;
 
-    const selectedUser = localStorage.getItem("selectedUser");
-    const currentUser = localStorage.getItem("currentUser");
+    const selectedUser = useSelectedUser().selectedUser;
+    const currentUser = useUser().id;
 
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
-        fetch(`/users/${currentUser}/dm/${selectedUser}`)
+        fetch(`/user/${currentUser}/dm/${selectedUser}`)
         .then(response => {
             if (response.ok) {
                 response.json().then(messages => dispatch({
@@ -25,13 +28,6 @@ function Messages() {
             };
         });
     }, []);
-
-    console.log(messagesState);
-
-    // console.log(selectedUser);
-    // console.log(currentUser);
-    // console.log(messagesState);
-    // console.log(messages);
 
     const renderMessages = 
         messages ?
@@ -85,21 +81,8 @@ function Messages() {
             })
                     :
                         <></>       
-            
 
-    // const renderMessageCards = messages.map((message, i) => {
-    //     return (
-    //         <MessageCard
-    //             key={i} 
-    //             image={message.profile_picture}
-    //             name={message.name}
-    //             message={message.body}
-    //             newness={message["is_new?"]}
-    //         />
-    //     );
-    // });
-
-       return(renderMessages)
+    return(renderMessages)
 };
 
 export default Messages; 

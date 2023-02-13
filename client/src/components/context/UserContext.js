@@ -24,7 +24,7 @@ function userReducer(user, action) {
         case "removed": {
             return {
                 ...user,
-                user: action.user
+                user: action.user, id: action.id
             }
         };
     };
@@ -39,7 +39,7 @@ function UserProvider({ children }) {
     return (
         <UserContext.Provider value={user}>
             <UserDispatchContext.Provider value={dispatch}>
-                {children}
+            {children}
             </UserDispatchContext.Provider>
         </UserContext.Provider>
     );

@@ -4,6 +4,7 @@ import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 
 import Timeline from "./Timeline";
+import PostMaker from "./PostMaker";
 
 import { useUser } from "./context/UserContext";
 
@@ -14,6 +15,7 @@ function Home() {
     if (userState.user) {
         return (
             <div id="timeline">
+                <PostMaker />
                 <Timeline />
             </div>
         )

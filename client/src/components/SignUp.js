@@ -2,9 +2,11 @@ import { useState, useContext } from 'react';
 import { useUserDispatch, useUser } from "./context/UserContext";
 import Modal from "react-bootstrap/Modal";
 
-function SignUp({
-  apiKey,
-}) {
+import { useNavigate } from "react-router";
+
+function SignUp() {
+
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -12,6 +14,7 @@ function SignUp({
   const [profilePicture, setProfilePicture] = useState("");
   const [relationshipStatus, setRelationshipStatus] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   
   const [errors, setErrors] = useState([]);
 
@@ -34,94 +37,124 @@ function SignUp({
         "password_confirmation": null, 
         "profile_picture": profilePicture,
         "relationship_status": relationshipStatus,
+        "username": username
       }
     };
 
-
-    fetch("/users", {
+    const postRequest = {
       method:'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(user)
-    })
-    .then(res => {
-      if (res.ok) {
-        res.json().then(user => {
+    };
+
+    fetch("/users", postRequest)
+    .then(response => {
+      if (response.ok) {
+        response.json().then(user => {
           dispatch({
             type: "added",
-            user: { "user": user },
+            user: user,
           });
-          localStorage.setItem("currentUser", user.id);
+          navigate("/");
         });
       } else {
-        res.json().then(
-          errors => console.log(errors.error)
-          )
+        response.json().then(errors => console.log(errors.error))
       }
     })
-
   };
 
+  function handleFile(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      setProfilePicture(e.target.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const renderProfilePicture = 
+    profilePicture !== "" ?
+      <>
+        <img src={profilePicture} className="account-center-image"/>
+      </>
+        :
+      <>
+        <p>Upload a profile picture to preview it here!</p>
+      </>
+
   return (
-  <>
+    <>
       <p id="sign-in-link" onClick={() => handleShow()}>Sign Up</p>
 
       <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-          <Modal.Title>Create an Account</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={onSubmit}>
 
-          <label>
-            Name
-          </label>
-          <input type='text' value={name} onChange={(e) => setName(e.target.value)} />
+        <Modal.Header closeButton>
+            <Modal.Title>Create an Account</Modal.Title>
+        </Modal.Header>
 
-          <label>
-            Email
-          </label>
-          <input placeholder='mylove@together.io' type='text' value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Modal.Body>
+          <form onSubmit={onSubmit}>
 
-          <label>
-            Password
-          </label> 
-          <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+            <label>
+              Full Name
+            </label>
+            <input type='text' value={name} onChange={(e) => setName(e.target.value)} />
 
-          <label>
-            Date of Birth
-          </label>
-          <input type='date' value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+            <label>
+              Email
+            </label>
+            <input placeholder='mylove@together.io' type='text' value={email} onChange={(e) => setEmail(e.target.value)} />
 
-          <label>
-            Gender
-          </label>
-          <input placeholder='Gender' type='text' value={gender} onChange={(e) => setGender(e.target.value)} />
+            <label>
+              Username
+            </label>
+            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
 
-          <label>
-            Profile Picture
-          </label>
-          <input type='file' value={profilePicture} onChange={(e) => setProfilePicture(e.target.value)} />
+            <label>
+              Password
+            </label> 
+            <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
 
-          <label>
-            Relationship Status
-          </label>
-          <input type='text' value={relationshipStatus} onChange={(e) => setRelationshipStatus(e.target.value)} />
+            <label>
+              Date of Birth
+            </label>
+            <input type='date' value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
 
-          <input type= 'submit' value ='Sign Up!' />
+            <label>
+              Gender
+            </label>
+            <input placeholder='Gender' type='text' value={gender} onChange={(e) => setGender(e.target.value)} />
 
-        </form>
-      </Modal.Body>
-      <Modal.Footer>
-          <button onClick={handleClose}>
-          Cancel
-          </button>
-          <button onClick={() => onSubmit()}>
-          Sign In
-          </button>
-      </Modal.Footer>
-      </Modal>
+            <label>
+              Profile Picture
+            </label>
+            <input accept=".jpg, .png, .jpeg" type='file' onChange={(e) => handleFile(e)} />
+          
+            {renderProfilePicture}
+
+            <label>
+              Relationship Status
+            </label>
+            <input type='text' value={relationshipStatus} onChange={(e) => setRelationshipStatus(e.target.value)} />
+
+          </form>
+
+        </Modal.Body>
+
+        <Modal.Footer>
+            <button onClick={handleClose}>
+              Cancel
+            </button>
+            <button onClick={(e) => onSubmit(e)}>
+              Sign Up
+            </button>
+        </Modal.Footer>
+
+        </Modal>
       </>
   )
-}
+};
 
 export default SignUp;

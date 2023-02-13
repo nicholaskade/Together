@@ -21,12 +21,28 @@ function friendsReducer(friends, action) {
                 friends: action.friends
             }
         };
+
         case "unmount": {
             return {
                 ...friends,
                 friends: null
             }
         };
+
+        case "add": {
+            return {
+                ...friends,
+                friends: [action.friend, ...friends.friends]
+            }
+        };
+
+        case "delete": {
+            return {
+                ...friends,
+                friends: friends.friends.filter((friend) => friend.id !== action.friend_id)
+            }
+        };
+
     };
 };
 

@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
-import { usePosts, usePostsDispatch } from "./context/PostsContext";
+import { usePostsDispatch } from "./context/PostsContext";
+import { useLikedPosts, useLikedPostsDispatch } from "./context/LikedPostsContext";
+import Posts from "./Posts";
 import { useUser } from "./context/UserContext";
 
 function Timeline() {
     
-    const dispatch = usePostsDispatch();
-    const postsState = usePosts();
-    const posts = usePosts().posts;
-
+    const postsDispatch = usePostsDispatch();
+    const likedPostsDispatch = useLikedPostsDispatch();
     const [errors, setErrors] = useState([]);
-
     const uid = useUser().user.id;
 
     useEffect(() => {
         fetch('/posts')
         .then(response => {
             if (response.ok) {
-                response.json().then(posts => { dispatch({
+                response.json().then(posts => { postsDispatch({
                     type: "mount",
                     posts: posts
                 })})
@@ -24,52 +23,23 @@ function Timeline() {
         else {
             response.json().then(data => setErrors(data.errors))
         }});
-    }, []);
-    
 
-    const renderPosts = 
-        posts 
-            ?
-        posts.map((post) => 
-             { if (post.type_of === "text") {
-                return (
-                    <div className="post-container">
-                        <div className="post">
-                            <div className="post-header">
-                                <img alt="" className="friend-button" src={post.user.profile_picture}/>
-                                <h1>{post.user.full_name} • {post.user.username}</h1>
-                            </div>
-                            <div className="post-text">
-                                <p>{post.text}</p>
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (post.type_of === "image") {
-                return (
-                    <div className="post-container">
-                        <div className="post">
-                            <div className="post-header">
-                                <img alt="" className="friend-button" src={post.user.profile_picture}/>
-                                <h1>{post.user.full_name} • {post.user.username}</h1>
-                            </div>
-                            <div className="post-image-container">
-                                <img alt="" className="post-image" src={post.image}/>
-                            </div>
-                            <div className="post-text">
-                                <p>{post.text}</p>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
-        }) 
-            :
-                <></>
+        fetch(`/user/${uid}/likes`)
+        .then(response => {
+            if (response.ok) {
+                response.json().then(likedPosts => { likedPostsDispatch({
+                    type: "mount",
+                    likedPosts: likedPosts
+                })})
+        }
+        else {
+            response.json().then(data => setErrors(data.errors))
+        }});
+    }, [uid]);
 
     return (
         <div id="posts-container">
-            {renderPosts}
+            <Posts />
         </div>
     );
 };

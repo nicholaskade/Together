@@ -2,10 +2,13 @@ import { ReactComponent as AccountIcon } from "../account-icon.svg";
 
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import AccountInfo from "./AccountInfo";
 
 import { useUser } from "./context/UserContext";
+
+import { useNavigate } from "react-router";
+
+import { useProfileDispatch } from "./context/ProfileContext";
 
 function AccountSide() {
 
@@ -18,6 +21,20 @@ function AccountSide() {
 
     function handleCloseAccountInfo() {
         setShowAccountInfo(false);
+        dispatch({
+            type: "unmount"
+        });
+    };
+
+    const dispatch = useProfileDispatch();
+    const navigate = useNavigate();
+    const uid = useUser().id;
+
+    console.log(uid);
+
+    function handleClick() {
+        navigate("/my-profile");
+        setShowAccountInfo(false);
     };
 
     if (userState.user.profile_picture !== null) {
@@ -26,9 +43,7 @@ function AccountSide() {
                 <img src={userState.user.profile_picture} className="avatar-button" onClick={() => handleShowAccountInfo()}/>
                 <Offcanvas placement={"end"} show={showAccountInfo} onHide={handleCloseAccountInfo}>
                     <Offcanvas.Header closeButton>
-                        <Link to="/account-center">
-                            <Offcanvas.Title>My Account</Offcanvas.Title>
-                        </Link>
+                        <Offcanvas.Title id="my-account-header" onClick={() => handleClick()}>My Account</Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <AccountInfo />
@@ -38,19 +53,17 @@ function AccountSide() {
         )
     } else {
         return (
-        <>
-            <AccountIcon onClick={() => handleShowAccountInfo()} className="avatar-button" />
-            <Offcanvas placement={"end"} show={showAccountInfo} onHide={handleCloseAccountInfo}>
-                <Offcanvas.Header closeButton>
-                    <Link to="/account-center">
-                        <Offcanvas.Title>My Account</Offcanvas.Title>
-                    </Link>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <AccountInfo />
-                </Offcanvas.Body>
-            </Offcanvas>
-        </>
+            <>
+                <AccountIcon onClick={() => handleShowAccountInfo()} className="avatar-button" />
+                <Offcanvas placement={"end"} show={showAccountInfo} onHide={handleCloseAccountInfo}>
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title id="my-account-header" onClick={() => handleClick()}>My Account</Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <AccountInfo />
+                    </Offcanvas.Body>
+                </Offcanvas>
+            </>
         )
     };
 };

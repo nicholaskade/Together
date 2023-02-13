@@ -3,7 +3,7 @@ import { useContext, useReducer, createContext } from "react";
 const MessagesContext = createContext(null);
 const MessagesDispatchContext = createContext(null);
 
-const initialMessages = { messages: null };
+const initialMessages = { id: null, messages: null };
 
 function useMessages() {
     return useContext(MessagesContext);
@@ -18,13 +18,15 @@ function messagesReducer(messages, action) {
         case "mount": {
             return {
                 ...messages,
-                messages: action.messages
+                messages: action.messages.messages,
+                id: action.messages.id
             }
         };
         case "unmount": {
             return {
                 ...messages,
-                messages: action.messages
+                messages: null,
+                id: null
             }
         };
         case "add": {

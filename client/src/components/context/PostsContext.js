@@ -21,10 +21,25 @@ function postsReducer(posts, action) {
                 posts: action.posts
             }
         };
+        
         case "unmount": {
             return {
                 ...posts,
-                posts: action.posts
+                posts: null
+            }
+        };
+
+        case "add": {
+            return {
+                ...posts,
+                posts: [action.post, ...posts.posts]
+            }
+        };
+
+        case "delete": {
+            return {
+                ...posts,
+                posts: posts.posts.filter((post) => post.id !== action.post.id)
             }
         };
     };
