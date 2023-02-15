@@ -30,12 +30,13 @@ function PostMaker() {
     };
 
     function handleFile(e) {
-        const file = e.target.files[0];
+        let file = e.target.files[0];
         const reader = new FileReader();
     
         reader.onload = (e) => {
-            if (file.size > 104576) {
-                alert("Your file is too large. Please mind our 1MB upload limit per post.")
+            console.log(file);
+            if (file.size > 1000000) {
+                alert("Your file is too large. Please mind our 1MB upload limit per post.");
             } else {
                 setPhoto(e.target.result);
             };
@@ -110,7 +111,7 @@ function PostMaker() {
                                     }
 
                                     <form>
-                                        <input type="file" onChange={(e) => handleFile(e)} value={photo}/>
+                                        <input type="file" onChange={(e) => handleFile(e)}/>
                                         <textarea onChange={(e) => setText(e.target.value)} value={text} placeholder="500 character limit" maxLength="500" rows="7" cols="10"/>
                                     </form>
                                 </>

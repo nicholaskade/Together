@@ -1,16 +1,13 @@
-import Offcanvas from "react-bootstrap/Offcanvas";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import AccountInfo from "./AccountInfo";
-import { useFriends } from "./context/FriendsContext";
-
-import { useUser } from "./context/UserContext";
 import { useNavigate } from "react-router";
 
+import { useFriends } from "./context/FriendsContext";
+import { useUser } from "./context/UserContext";
 import { useProfileDispatch } from "./context/ProfileContext";
-
 import { ReactComponent as SearchButton } from "../search-button.svg";
+
 import Modal from "react-bootstrap/Modal";
+import Offcanvas from "react-bootstrap/Offcanvas";
 
 function Search() {
     const userState = useUser();
@@ -22,7 +19,6 @@ function Search() {
 
     const dispatch = useProfileDispatch();
     const navigate = useNavigate();
-    const uid = useUser().id;
 
     useEffect(() => {
         fetch("/users")
@@ -63,11 +59,11 @@ function Search() {
         friends ?
             friends.map((friend) => {
                 return (
-                    <div className="search-default-card">
-                        <img src={friend.profile_picture} alt={friend.full_name} className="friend-button" onClick={(e) => handleClick(e, friend.id)}/>
-                        <div className="search-card-names" onClick={(e) => handleClick(e, friend.id)}>
-                            <h6 onClick={(e) => handleClick(e, friend.id)}>{friend.full_name}</h6>
-                            <h6 onClick={(e) => handleClick(e, friend.id)}>{friend.username}</h6>
+                    <div className="search-default-card" onClick={(e) => handleClick(friend.id)}>
+                        <img src={friend.profile_picture} alt={friend.full_name} className="friend-button" onClick={(e) => handleClick(friend.id)}/>
+                        <div className="search-card-names" onClick={(e) => handleClick(friend.id)}>
+                            <h6 onClick={(e) => handleClick(friend.id)}>{friend.full_name}</h6>
+                            <h6 onClick={(e) => handleClick(friend.id)}>{friend.username}</h6>
                         </div>
                     </div>
                 )
@@ -89,7 +85,7 @@ function Search() {
         users.length > 0 ?
             filteredUsers.slice(0, 10).map( (user) => {
                 return (
-                    <div className="search-default-card">
+                    <div className="search-default-card" onClick={(e) => handleClick(user.id)}>
                         <img src={user.profile_picture} alt={user.full_name} className="friend-button" onClick={(e) => handleClick(user.id)}/>
                         <div onClick={(e) => handleClick(user.id)} className="search-card-names">
                             <h6 onClick={(e) => handleClick(user.id)}>{user.full_name}</h6>
@@ -105,7 +101,7 @@ function Search() {
         users.length > 0 ?
             filteredUsers.map((user) => {
                 return (
-                    <div className="search-default-card">
+                    <div className="search-default-card" onClick={(e) => handleClick(user.id)}>
                         <img src={user.profile_picture} alt={user.full_name} className="friend-button" onClick={(e) => handleClick(user.id)}/>
                         <div onClick={(e) => handleClick(user.id)} className="search-card-names">
                             <h6 onClick={(e) => handleClick(user.id)}>{user.full_name}</h6>

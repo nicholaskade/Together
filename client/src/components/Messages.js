@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useUser } from "./context/UserContext";
 import { useSelectedUser } from "./context/SelectedUserContext";
 
+import ReactTimeAgo from "react-time-ago";
+
 function Messages() {
 
     const dispatch = useMessagesDispatch();
@@ -40,7 +42,7 @@ function Messages() {
                                 <div className="received-message-bubble">
                                     <p className="message-text">{message.body}</p>
                                 </div>
-                                <p className="message-timestamp">{message.created_at}</p>
+                                <ReactTimeAgo date={message.created_at} locale="en-US" timeStyle="round" className="post-time"/>
                             </div>
                         )
                     } else {
@@ -50,7 +52,7 @@ function Messages() {
                                 <div className="sent-message-bubble">
                                     <p className="message-text">{message.body}</p>
                                 </div>
-                                <p className="message-timestamp">{message.created_at}</p>
+                                <ReactTimeAgo date={message.created_at} locale="en-US" timeStyle="round" className="post-time"/>
                             </div>
                         )
                     }
@@ -63,7 +65,7 @@ function Messages() {
                                 <div className="received-message-bubble">
                                     <p className="message-text">{message.body}</p>
                                 </div>
-                                <p className="message-timestamp">{message.created_at}</p>
+                                <ReactTimeAgo date={message.created_at} locale="en-US" timeStyle="round" className="post-time"/>
                             </div>
                         )
                     } else {
@@ -73,7 +75,7 @@ function Messages() {
                                 <div className="sent-message-bubble">
                                     <p className="message-text">{message.body}</p>
                                 </div>
-                                <p className="message-timestamp">{message.created_at}</p>
+                                <ReactTimeAgo date={message.created_at} locale="en-US" timeStyle="round" className="post-time"/>
                             </div>
                         )
                     }

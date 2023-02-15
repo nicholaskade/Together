@@ -54,13 +54,14 @@ function SignUp() {
           dispatch({
             type: "added",
             user: user,
+            id: user.id
           });
           navigate("/");
         });
       } else {
         response.json().then(errors => console.log(errors.error))
       }
-    })
+    });
   };
 
   function handleFile(e) {

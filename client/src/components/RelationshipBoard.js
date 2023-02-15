@@ -10,12 +10,28 @@ import { ReactComponent as AddButton } from "../opinion-add-button.svg";
 
 import Modal from "react-bootstrap/Modal";
 import Opinions from "./Opinions";
+import Map from "./Map";
+
+import { Wrapper } from "@googlemaps/react-wrapper";
 
 function RelationshipBoard() {
 
     const so_uid = useSelectedUser().selectedUser;
     const [so, setSo] = useState(null);
+
     const [errors, setErrors] = useState([]);
+
+    const mapsApiKey = "AIzaSyBMkOLyU2LH7aEOFOv_cSka3UiPdKgHT5M";
+
+    const [map, setMap] = useState(null);
+    const [pos, setPos] = useState(undefined);
+
+
+    const render = (status) => {
+        return (
+            <h1>Loading...</h1>
+        );
+    };
 
     useEffect(() => {
         fetch(`/users/${so_uid}`)
@@ -25,6 +41,13 @@ function RelationshipBoard() {
             } else {
                 response.json().then(errors => setErrors(errors))
             };
+        });
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            setPos({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            })
         });
     }, []);
 
@@ -41,6 +64,16 @@ function RelationshipBoard() {
                         :
                     <></>
                 }
+                <Wrapper
+                    render={render}
+                    apiKey={mapsApiKey}
+                >
+                    <Map 
+                        pos={pos}
+                        setMap={setMap}
+                        map={map}
+                    />
+                </Wrapper>
                 <Opinions />
             </div>
         </>

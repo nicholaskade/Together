@@ -42,6 +42,15 @@ function postsReducer(posts, action) {
                 posts: posts.posts.filter((post) => post.id !== action.post.id)
             }
         };
+
+        case "update": {
+            const filteredPosts = posts.posts.filter((post) => post.id !== action.post.id);
+            
+            return {
+                ...posts,
+                posts: [action.post, ...filteredPosts]
+            }
+        };
     };
 };
 

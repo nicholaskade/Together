@@ -1,14 +1,13 @@
-import { ReactComponent as AppLogo } from "../together_logo.svg";
-
-import AccountSide from "./AccountSide";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
-import Search from "./Search";
-
 import { Link } from "react-router-dom";
 
 import { useUser } from "./context/UserContext";
 
+import UserIcon from "./UserIcon";
+import SignIn from "./SignIn";
+import SignUp from "./SignUp";
+import Search from "./Search";
+
+import { ReactComponent as AppLogo } from "../together_logo.svg";
 
 function Header() {
 
@@ -26,7 +25,7 @@ function Header() {
                     </div>
                     <div id="signed-out-header">
                         <Search />
-                        <AccountSide />
+                        <UserIcon />
                         <SignIn />
                     </div>
                 </div>
