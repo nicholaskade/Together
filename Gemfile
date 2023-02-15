@@ -46,5 +46,8 @@ group :development do
   # gem "spring"
 end
 
+gem "faker", "~> 2.20"
 
 gem "active_model_serializers", "~> 0.10.13"
+
+gem 'rest-client', '~> 2.1'
