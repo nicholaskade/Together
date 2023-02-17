@@ -3,6 +3,7 @@ import UserPosts from "./UserPosts";
 import { useProfile } from "./context/ProfileContext";
 import { useFriends, useFriendsDispatch }  from "./context/FriendsContext";
 import { useUser } from "./context/UserContext";
+import RelationshipTimeline from "./RelationshipTimeline";
 
 function UserProfile(){
 
@@ -123,6 +124,7 @@ function UserProfile(){
     return (
         <div id="profile-container">
             {renderProfile}
+            <RelationshipTimeline />
             <div id="posts-container">
                 <UserPosts />
             </div>

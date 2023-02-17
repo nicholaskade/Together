@@ -4,19 +4,32 @@
   }
 }
 
+@media screen and (max-width: 1899px) {
+  #app-body {
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 0 10% 0 10%;
+  }
+}
+
+@media screen and  (min-width: 1900px) {
+  #app-body {
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 0 20% 0 20%;
+  }
+}
+
 #account-button-container {
   display: flex;
 }
 
-#app-body {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
 .main-map {
+  display: flex;
+  align-self: center;
   margin: 8px;
-  height: 65vh;
-  width: 75vw;
+  height: 50vh;
+  width: 50vw;
   border-radius: 12px;
 }
 
@@ -34,10 +47,6 @@
   justify-content: space-between;
   background-color: #F7F3F1;
   align-items: center;
-}
-
-#header > .avatar-button {
-  margin: 0 3vw;
 }
 
 #header p {
@@ -133,6 +142,7 @@
 form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .modal-body {
@@ -223,6 +233,7 @@ body {
 #friends-header {
   color: #F7F3F1;
   font-size: x-large;
+  margin: unset !important;
 }
 
 .friend-bubble-card {
@@ -267,7 +278,7 @@ body {
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  margin: 0 1vw 0;
+  margin: 0 16px 0;
 }
 
 .friend-button:hover {
@@ -278,8 +289,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 1vw 2vw 0 0;
-  width: 20%;
+  margin: 16px 32px 0 0;
+  width: 35%;
 }
 
 #timeline {
@@ -318,12 +329,13 @@ body {
 .post-image {
   width: 95%;
   object-fit: cover;
-  margin: 1vh 0 0 0;
+  margin: 16px 0 0 0;
+  aspect-ratio: 1/1;
 }
 
 .post-text {
   color: #690303;
-  margin: 1vh 1vh 1vh 2.2vh;
+  margin: 16px 16px 16px 20px;
 }
 
 .post {
@@ -337,7 +349,7 @@ body {
   flex-direction: column;
   background-color: #F7F3F1;
   width: 80%;
-  margin: 0 0 2vh 0;
+  margin: 0 0 8px 0;
   border-radius: 8px;
 }
 
@@ -345,7 +357,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1vw 0 0 0;
+  margin: 18px 0 0 0;
   width: 80%;
 }
 
@@ -376,12 +388,12 @@ body {
   font-weight: bold;
   color: #690303;
   margin: unset;
-  margin: 0 0 0 1vw;
+  margin: 0 0 0 16px;
 }
 
-p {
+/* p {
   margin: 8px 0 8px 0 !important;
-}
+} */
 
 .message-input {
   display: flex;
@@ -398,18 +410,17 @@ p {
   background-color:#690303;
   color:#F7F3F1;
   font-weight: bold;
-  padding: 4px 4px 4px 4px;
+  padding: 8px;
   border-radius: 8px;
   display: flex;
   max-width: fit-content;
-
 }
 
 .received-message-bubble {
   background-color: #E19292;
   color:#690303;
   font-weight: bold;
-  padding: 4px 4px 4px 4px;
+  padding: 8px;
   border-radius: 8px;
   display: flex;
   max-width: fit-content;
@@ -429,7 +440,7 @@ p {
 }
 
 #post-maker-input-container {
-  margin: 16px;
+  /* margin: 16px; */
   display: flex;
   flex-direction: column;
 }
@@ -441,12 +452,19 @@ p {
   gap: 8px;
 }
 
-
 #post-maker-container h2 {
   font-size: x-large;
   color:#31101C;
   font-weight: bold;
   margin: unset;
+}
+
+#post-maker-input-container h2 {
+  font-size: x-large;
+  color:#31101C;
+  font-weight: bold;
+  margin: unset;
+  align-self: center;
 }
 
 #post-maker {
@@ -472,7 +490,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 0 16px 16px;
+  margin: 8px 0 16px 16px;
   justify-content: center;
 }
 
@@ -494,8 +512,11 @@ p {
 
 #profile-header {
   display: flex;
-  flex-direction: row;
-  margin: 16px 0 16px 0;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0 16px 0;
+  border-bottom: 1px solid #F7F3F1;
+  width: 100%;
 }
 
 #profile-container {
@@ -505,6 +526,9 @@ p {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  border-left: 1px solid #F7F3F1;
+  border-right: 1px solid #F7F3F1;
+  margin: 0 5% 0 5%;
 }
 
 #post-photo-preview-container {
@@ -532,7 +556,7 @@ p {
 #significant-other-sidebar-container {
   display: flex;
   flex-direction: column;
-  margin: 1vw 0 0 2vw;
+  margin: 16px 0 0 32px;
 }
 
 #search-show-all {
@@ -577,7 +601,7 @@ p {
   width: 80%;
   display: flex;
   flex-direction: column;
-  gap: 2vw;
+  gap: 16px;
   margin: 16px;
 }
 
@@ -663,11 +687,25 @@ p {
   margin: unset !important;
 }
 
+#dates-title {
+  font-size: x-large;
+  font-weight: bold;
+  color:#F7F3F1;
+  align-self: center;
+  margin: unset !important;
+}
+
+#dates-title:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 #relationship-board-header {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 16px;
   justify-content: center;
+  align-items: center;
 }
 
 .opinion-add-button {
@@ -728,12 +766,21 @@ time {
   width: 100%;
 }
 
-.comment-send-button {
+.send-button {
   margin: 0 2% 0 3%;
+  height: 48px;
+  width: 48px;
+  padding: 4px 8px;
 }
 
-.comment-send-button:hover {
+p {
+  margin: unset !important;
+}
+
+.send-button:hover {
   cursor: pointer;
+  border-radius: 50%;
+  background: #ebe4e1; 
 }
 
 .comment-input-area {
@@ -747,7 +794,8 @@ time {
   display: flex;
   flex-direction: column;
   border-top:  1px solid #31101C;
-  padding: 1vw 0 0 0;
+  padding: 16px 0 0 0;
+  width: 100%;
 }
 
 .comment-header {
@@ -755,34 +803,195 @@ time {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+}
+
+.comment-header-container {
+  display: flex;
+  justify-content: space-between;
 }
 
 .comment-header p {
   font-weight: bold;
-  margin: 0 8px 0 0 !important;
+  margin: 0 8px 0 0;
 }
 
 .comment-text {
   color: #690303;
-  margin: 0 0 0 1vw !important;
+  margin: 16px 0 0 16px;
 }
 
 .comment-footer {
-  padding: 0 0 1vw 0;
+  padding: 0 0 16px 0;
 }
 
 .delete-comment-button {
-  height: 24px;
-  width: 24px;
+  height: 48px;
+  width: 48px;
+  padding: 8px;
 }
 
 .delete-comment-button:hover {
   cursor: pointer;
-  height: 32px;
-  width: 32px;
+  border-radius: 50%;
+  background: #ebe4e1;
 }
 
 .delete-comment-button-container {
   display: flex;
-  margin: 0 0 0 45%;
+  justify-self: flex-end;
+}
+
+.info-window-text {
+  margin: unset !important;
+}
+
+.date-card {
+  background-color:#F7F3F1;
+  color:#31101C;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 8px;
+  justify-content: space-around;
+  width: fit-content;
+}
+
+#date-cards-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  width: 80%; 
+  margin: 16px;
+}
+
+.date-card-text {
+  margin: unset !important;
+  align-self: center;
+}
+
+.date-card-button {
+  height: 24px;
+  width: 24px;
+}
+
+.date-card-button:hover {
+  cursor: pointer;
+}
+
+.date-card-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+}
+
+#your-dates-with {
+  font-size: x-large;
+  font-weight: bold;
+  color: #F7F3F1;
+}
+
+#go-back-from-dates {
+  background-color: #F7F3F1;
+  color: #31101C;
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+  height: 15%;
+  margin: 16px;
+  border-radius: 12px;
+  gap: 8px;
+  justify-content: center;
+}
+
+#go-back-from-dates:hover {
+  cursor: pointer;
+}
+
+#go-back-from-dates h1 {
+  margin: unset !important;
+}
+
+.milestone-card {
+  display: flex;
+  flex-direction: row;
+  background-color: #F7F3F1;
+  color:#31101C;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #31101C;
+}
+
+.milestone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 8px 0 0;
+}
+
+.milestone-text {
+  margin: unset !important;
+}
+
+#relationship-timeline-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px 0;
+}
+
+.relationship-timeline-title {
+  margin: unset !important;
+}
+
+#relationship-timeline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid #F7F3F1;
+}
+
+.milestone-delete-button {
+  height: 18px;
+  width: 18px;
+}
+
+.milestone-delete-button:hover {
+  cursor: pointer;
+}
+
+.sidebar-button {
+  height: 18px;
+  width: 18px;
+}
+
+.sidebar-button:hover {
+  cursor: pointer;
+}
+
+#significant-other-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.relationship-timeline-show-more:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.full-relationship-timeline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }

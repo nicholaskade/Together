@@ -44,7 +44,7 @@ function datesReducer(dates, action) {
         };
 
         case "update": {
-            const filteredDates = dates.dates.filter((post) => post.id !== action.post.id);
+            const filteredDates = dates.dates.filter((date) => date.id !== action.date.id);
             
             return {
                 ...dates,

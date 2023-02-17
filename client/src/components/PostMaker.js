@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Modal from "react-bootstrap/Modal";
 
@@ -11,12 +11,29 @@ function PostMaker() {
     const [postType, setPostType] = useState("image");
     const [text, setText] = useState("");
     const [photo, setPhoto] = useState("");
-    const userId = useUser().user.id;
+    const uid = useUser().user.id;
     const postsDispatch = usePostsDispatch();
+
+    const [milestoneType, setMilestoneType] = useState("marriage");
+    const [milestoneDate, setMilestoneDate] = useState("");
+
+    const [partnerId, setPartnerId] = useState(0);
 
     const [errors, setErrors] = useState([]);
 
-    console.log(userId);
+    const [significantOthers, setSignificantOthers] = useState([]);
+
+    useEffect(() => {
+        fetch(`/user/${uid}/significant_others`)
+        .then(response => {
+            if (response.ok) {
+                response.json().then(significantOthers => setSignificantOthers(significantOthers))
+                setPartnerId(significantOthers[0].id)
+            } else {
+                response.json().then(errors => setErrors(errors))
+            }
+        })
+    }, []);
 
     function handleClose() { 
         setShow(false)
@@ -49,27 +66,51 @@ function PostMaker() {
         "text": text,
         "image": photo,
         "type_of": postType,
-        "user_id": userId
+        "user_id": uid
+    };
+
+    let milestone = {
+        "creator_id": uid,
+        "partner_id": partnerId,
+        "date": milestoneDate,
+        "type_of": milestoneType,
     };
 
     function handlePost() {
-        const postRequest = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(post)
-        };
-
-        fetch("/posts", postRequest)
-        .then(response => {
-            if (response.ok) {
-                response.json().then(post => postsDispatch({
-                    type: "add",
-                    post: post 
-                }))
-            } else {
-                response.json().then(errors => setErrors(errors))
+        if (postType !== "milestone") {
+            const postRequest = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(post)
             };
-        });
+    
+            fetch("/posts", postRequest)
+            .then(response => {
+                if (response.ok) {
+                    response.json().then(post => postsDispatch({
+                        type: "add",
+                        post: post 
+                    }))
+                } else {
+                    response.json().then(errors => setErrors(errors))
+                };
+            });
+        } else {
+            const postRequest = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(milestone)
+            };
+
+            fetch("/milestones", postRequest)
+            .then(response => {
+                if (response.ok) {
+                    response.json().then(post => console.log(post))
+                } else {
+                    response.json().then(errors => setErrors(errors))
+                };
+            });
+        };
 
         handleClose();
     };
@@ -94,8 +135,9 @@ function PostMaker() {
                                     <option value="milestone">milestone</option>
                                 </select>
                             <h2> to togther.io</h2>
+            
                         </div>
-                        
+                        <br></br>            
                         <div id="post-maker-input-container">
                             { postType === "image" && 
                                 <>
@@ -125,14 +167,37 @@ function PostMaker() {
 
                             { postType === "milestone" &&
                                     <form>
-                                        <select name="milestone-type" id="post-maker">
+                                        <select name="milestone-type" id="post-maker" onChange={(e) => setMilestoneType(e.target.value)}>
                                             <option value="marriage">marriage</option>
                                             <option value="engagement">engagement</option>
                                             <option value="welcomed a baby">welcomed a baby</option>
                                             <option value="pregnancy">pregnancy</option>
                                             <option value="adopted a child">adopted a child</option>
-                                            <option value="anniversary">anniversary</option>
+                                            <option value="moved in together">moved in together</option>
+                                            <option value="first date">first date</option>
+                                            <option value="became official">became official</option>
                                         </select>
+
+                                        <br></br>
+                                        
+                                        <h2>partner</h2>
+                                        <select id="post-maker" onChange={(e) => setPartnerId(e.target.value)}>
+                                            <option>select your partner</option>
+                                            {
+                                                significantOthers.length > 0 &&
+                                                    significantOthers.map((so) => {
+                                                        return (
+                                                            <option value={so.id}>{so.full_name}</option>
+                                                        )
+                                                    })
+                                            }
+                                        </select>
+
+                                        <br></br>
+                                        
+                                        <h2>date</h2>
+                                        <input id="post-maker" type="date" value={milestoneDate} onChange={(e) => setMilestoneDate(e.target.value)}/>
+
                                     </form>
                             }
                         </div>

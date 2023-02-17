@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authorized_user, only:[:create, :set_user, :dms, :significant_others, :so_opinions, :dates]
-  before_action :set_user, only: [:show, :update, :destroy, :friends, :dms, :unfriend, :significant_others]
+  before_action :set_user, only: [:show, :update, :destroy, :friends, :dms, :unfriend, :significant_others, :make_so]
 
   def dates
     dates = User.find(params[:id]).outings
@@ -43,8 +43,25 @@ class UsersController < ApplicationController
     render json: friends
   end
 
-  def significant_others
+  def make_so 
     friendships = @user.sent_friendships + @user.received_friendships
+    target = []
+
+    target_friendship = find_friendship(friendships)
+
+    if target_friendship == []
+      render json: { "errors": "Friendship not found." }, status: :no_content
+    elsif target.length == 1
+      friendship_to_update = target_friendship[0]
+      friendship_to_update.update(is_significant_other: true)
+      render json: User.find(params[:friend_id]), status: :ok
+    else 
+      render json: { "errors": "Something went wrong in our database. Please contact together.io support." }, status: 404
+    end
+  end
+
+  def significant_others
+    friendships = @user.friendships
     target = []
 
     for friendship in friendships
@@ -56,7 +73,6 @@ class UsersController < ApplicationController
         end
       end
     end
-
     render json: target, status: :ok
   end
 
@@ -74,25 +90,32 @@ class UsersController < ApplicationController
   end
 
   def unfriend 
-    friendships = @user.sent_friendships + @user.received_friendships
-    target = []
+    friendships = @user.friendships
+    target_friendship = find_friendship(friendships)
 
-    for friendship in friendships
-      if friendship.recipient_id == @user.id && friendship.sender_id == params[:friend_id].to_i
-        target << friendship
-      elsif friendship.sender_id == @user.id && friendship.recipient_id == params[:friend_id].to_i
-        target << friendship
-      end
-    end
-
-    if target == []
-      render json: { "errors": "Friendship not found." }, status: :no_content
-    elsif target.length == 1
-      deleted_friendship = target[0]
-      deleted_friendship.destroy
+    if target_friendship == []
+      render json: { "errors": "Friendship not found." }, status: :not_found
+    elsif target_friendship.length == 1
+      friendship_to_delete = target_friendship[0]
+      friendship.to_delete.destroy
       render json: User.find(params[:friend_id]), status: :ok
     else 
-      render json: { "errors": "Something went wrong in our database. Please contact together.io support." }, status: 404
+      render json: { "errors": "Something went wrong in our database. Please contact together.io support." }, status: 500
+    end
+  end
+
+  def unmake_so
+    friendships = @user.friendships
+    target_friendship = find_friendship(friendships)
+
+    if target_friendship == []
+      render json: { "errors": "Friendship not found." }, status: :not_found
+    elsif target_friendship.length == 1
+      just_friends = target_friendship[0]
+      just_friends.update(is_significant_other: false)
+      render json: User.find(params[:friend_id]), status: :ok
+    else
+      render json: { "errors": "Something went wrong in our database. Please contact together.io support." }, status: 500
     end
   end
 
@@ -132,9 +155,22 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
     @user.destroy
+    render json: @user, status: :ok
   end
 
   private
+    def find_friendship(friendships)
+      target = []
+
+      for friendship in friendships
+        if friendship.recipient_id == @user.id && friendship.sender_id == params[:friend_id].to_i
+          target << friendship
+        elsif friendship.sender_id == @user.id && friendship.recipient_id == params[:friend_id].to_i
+          target << friendship
+        end
+      end
+      target
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])

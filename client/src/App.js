@@ -9,6 +9,7 @@ import Sidebar from "./components/Sidebar";
 import UserProfile from "./components/UserProfile";
 import MyProfile from "./components/MyProfile";
 import RelationshipBoard from "./components/RelationshipBoard";
+import DatePage from "./components/DatePage";
 
 function App() {
 
@@ -31,6 +32,8 @@ const mapsApiKey = "AIzaSyDqQrYQMcH8E9yBZ5GVMCjLntOyqwb9SnI";
               <Route path="/user-profile" element={<UserProfile/>}/>
 
               <Route path="/relationship-board" element={<RelationshipBoard/>}/>
+
+              <Route path="/dates" element={<DatePage/>}/>
 
               <Route exact path="/" element={<Home/>}/>
 

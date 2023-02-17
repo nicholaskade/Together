@@ -1,18 +1,70 @@
 import { useEffect, useState } from "react"; 
 import Modal from "react-bootstrap/Modal";
-
+import { useDates, useDatesDispatch } from "./context/DatesContext";
 
 function EditDateModal({
     showEditModal,
     targetPost,
     handleCancel,
-
 }) {
 
+    useEffect(() => {
+        if (targetPost) {
+            fetch(`/outings/${targetPost}`)
+            .then(res => {
+                if (res.ok) {
+                    res.json().then(outing => {
+                        setDateName(outing.name);
+                        setDateDate(outing.date);
+                        setDateNotes(outing.notes);
+                    })
+                } else {
+                    res.json().then(errors => setErrors(errors))
+                }
+            })
+        };
+    }, [targetPost]);
+
+    function handleSubmitEdits() {
+        const updatedDate = {
+            "name": dateName,
+            "date": dateDate,
+            "notes": dateNotes
+        };
+
+        const patchRequest = {
+            "method": "PATCH",
+            "headers": { "Content-Type": "application/json" },
+            "body": JSON.stringify(updatedDate)
+        };
+
+        fetch(`/outings/${targetPost}`, patchRequest)
+        .then(res => {
+            if (res.ok) {
+                res.json().then(outing => datesDispatch({
+                    type: "update",
+                    date: outing
+                }));
+            } else {
+                res.json().then(errors => setErrors(errors));
+            };
+        });
+        handleCancelEdit();
+    };
+
+    function handleCancelEdit() {
+        setDateDate(null);
+        setDateName("");
+        setDateNotes("");
+        handleCancel();
+    };
+
     const [dateName, setDateName] = useState("");
-    const [dateAddress, setDateAddress] = useState("");
-    const [dateDate, setDateDate] = useState(null);
+    const [dateDate, setDateDate] = useState(new Date());
     const [dateNotes, setDateNotes] = useState("");
+    const datesDispatch = useDatesDispatch();
+
+    const [errors, setErrors] = useState([]);
     
     return(
         <>
@@ -24,9 +76,6 @@ function EditDateModal({
                         <label>Date Label:</label>
                         <input type="text" value={dateName} onChange={(e) => setDateName(e.target.value)}/>
 
-                        <label>Date Address:</label>
-                        <input type="text" value={dateAddress} onChange={(e) => setDateAddress(e.target.value)}/>
-
                         <label>Date:</label>
                         <input type="date" value={dateDate} onChange={(e) => setDateDate(e.target.value)}/>
 
@@ -37,8 +86,8 @@ function EditDateModal({
                 </Modal.Body>
             
                 <Modal.Footer>
-                    <button onClick={() => handleCancel()}>Cancel</button>
-                    <button onClick={() => console.log("Confirmed")}>Confirm</button>
+                    <button onClick={() => handleCancelEdit()}>Cancel</button>
+                    <button onClick={() => handleSubmitEdits()}>Confirm</button>
                 </Modal.Footer>
             </Modal>
         </>

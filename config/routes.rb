@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :milestones
   resources :opinions
   resources :comments
   resources :outings
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
   get "user/:id/significant_others", to: "users#significant_others"
   get "user/:id/opinions/:friend_id", to: "users#so_opinions"
   get "user/:id/dates/:friend_id", to: "users#dates"
+  get "user/:id/make_significant/:friend_id", to: "users#make_so"
 
   get "user/:id/posts", to: "posts#user_posts"
 
@@ -30,4 +32,6 @@ Rails.application.routes.draw do
   delete "user/:id/unfriend/:friend_id", to: "users#unfriend"
 
   post "/get_coords", to: "outings#return_coordinates"
+
+  get "/user/:id/milestones", to: "milestones#user_milestones"
 end

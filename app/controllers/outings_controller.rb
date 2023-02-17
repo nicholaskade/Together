@@ -58,6 +58,7 @@ class OutingsController < ApplicationController
   # DELETE /outings/1
   def destroy
     @outing.destroy
+    render json: @outing, status: :ok
   end
 
   private

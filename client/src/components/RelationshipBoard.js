@@ -54,7 +54,7 @@ function RelationshipBoard() {
     return (
         <>
             <div id="relationship-board-container">
-                {
+            {
                     so 
                         ?
                     <div id="relationship-board-header">
@@ -64,6 +64,7 @@ function RelationshipBoard() {
                         :
                     <></>
                 }
+                <Opinions />
                 <Wrapper
                     render={render}
                     apiKey={mapsApiKey}
@@ -74,7 +75,6 @@ function RelationshipBoard() {
                         map={map}
                     />
                 </Wrapper>
-                <Opinions />
             </div>
         </>
     )

@@ -158,6 +158,13 @@ function PostCommentsModal({
                         <ReactTimeAgo date={post.created_at} locale="en-US" timeStyle="twitter"/>
                     </div>
                 </div>
+                {
+                    post.image ?
+                    <div className="post-image-container">
+                        <img alt="" className="post-image" src={post.image}/>
+                    </div> 
+                        : <></>
+                }
                 <div className="post-text">
                     <p>{post.text}</p>
                 </div>
@@ -185,10 +192,12 @@ function PostCommentsModal({
             comments.map((comment) => {
                 return (
                     <div className="comment-container">
-                        <div className="comment-header">
-                            <img src={comment.user.profile_picture} className="friend-button"/>
-                            <p className="comment-names">{comment.user.full_name}</p>
-                            <ReactTimeAgo date={comment.created_at} locale="en-US" timeStyle="twitter"/>
+                        <div className="comment-header-container">
+                            <div className="comment-header">
+                                <img src={comment.user.profile_picture} className="friend-button"/>
+                                <p className="comment-names">{comment.user.full_name}</p>
+                                <ReactTimeAgo date={comment.created_at} locale="en-US" timeStyle="twitter"/>
+                            </div>
                             {
                                 comment.user.id === uid &&
                                     <div className="delete-comment-button-container">
@@ -220,7 +229,7 @@ function PostCommentsModal({
                         <form className="comment-input" onSubmit={(e) => handleSubmitComment(e)}>
                             <input className="comment-input" type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)}/>
                         </form>
-                        <SendButton className="comment-send-button" onClick={(e) => handleSubmitComment(e)}/>
+                        <SendButton className="send-button" onClick={(e) => handleSubmitComment(e)}/>
                     </div>
                 </Modal.Footer>
             </Modal>

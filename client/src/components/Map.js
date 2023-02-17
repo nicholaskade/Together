@@ -5,6 +5,8 @@ import Modal from "react-bootstrap/Modal";
 import ConfirmationModal from "./ConfirmationModal";
 import { useUser } from "./context/UserContext";
 import { useSelectedUser } from "./context/SelectedUserContext";
+import { useNavigate } from "react-router";
+import { useDatesDispatch } from "./context/DatesContext";
 
 function Map({
     pos,
@@ -19,6 +21,8 @@ function Map({
     const [dateName, setDateName] = useState("");
     const [dateDate, setDateDate] = useState(Date.now());
     const [errors, setErrors] = useState([]);
+    const navigate = useNavigate();
+    const dispatch = useDatesDispatch();
 
     const [dateCoords, setDateCoords] = useState({});
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -26,7 +30,7 @@ function Map({
     useEffect(() => {
         if (ref.current && pos !== undefined) {
             setMap(new window.google.maps.Map(ref.current, {
-                zoom: 12,
+                zoom: 10,
                 center: pos
             }));
         };
@@ -85,7 +89,11 @@ function Map({
         fetch("/outings", postRequest)
         .then(response => {
             if (response.ok) {
-                response.json().then(outings => console.log(outings));
+                response.json().then(outing => dispatch({
+                    type: "add",
+                    date: outing 
+                }));
+                
                 handleCancel();
             } else {
                 response.json().then(errors => setErrors(errors));
@@ -96,7 +104,7 @@ function Map({
     return (
         <>
             <div id="dislikes-header">
-                <h1 id="relationship-board-title">Your Dates</h1>
+                <h1 id="dates-title" onClick={() => navigate("/dates")}>Your Dates</h1>
                 <AddButton className="opinion-add-button" onClick={() => setShowDateModal(true)}/>
             </div>
             <div id="google-map" className="main-map" ref={ref}/>
