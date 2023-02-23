@@ -10,10 +10,10 @@ class ApplicationController < ActionController::API
         else 
             nil
         end 
-    end
+    end 
 
     def authorized_user
         render json: { error: "Not Authorized" }, status: :unauthorized unless current_user
     end 
       
-end
+  end

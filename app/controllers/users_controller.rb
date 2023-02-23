@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_action :authorized_user, only:[:create, :set_user, :dms, :significant_others, :so_opinions, :dates]
-  before_action :set_user, only: [:show, :update, :destroy, :friends, :dms, :unfriend, :significant_others, :make_so]
+  skip_before_action :authorized_user, only:[:create, :set_user, :dms, :significant_others, :so_opinions, :dates, :friends, :friends_with_chats]
+  before_action :set_user, only: [:show, :update, :destroy, :friends, :dms, :unfriend, :significant_others, :make_so, :friends_with_chats]
 
   def dates
     dates = User.find(params[:id]).outings
@@ -38,9 +38,37 @@ class UsersController < ApplicationController
     render json: served 
   end
 
+  def friends_with_chats
+    friends = @user.friends
+    friends_with_chats = []
+
+
+    for friend in friends
+      chats = friend.chats
+      chat_with_friend = []
+
+      for chat in chats
+        if chat.user_ids.sort == [(params[:id].to_i), friend.id.to_i].sort
+          chat_with_friend << chat
+        end
+      end
+
+      if chat_with_friend.empty?
+        chat = Chat.create(name: nil)
+        ChatUser.create(user_id: params[:id], chat_id: chat.id)
+        ChatUser.create(user_id: friend.id, chat_id: chat.id)
+        chat_with_friend << chat
+      end
+
+      friends_with_chats << { friend: friend, chat: chat_with_friend[0] }
+    end
+    
+    render json: friends_with_chats, status: :ok
+  end
+
   def friends
     friends = @user.friends
-    render json: friends
+    render json: friends, status: :ok
   end
 
   def make_so 
@@ -97,7 +125,7 @@ class UsersController < ApplicationController
       render json: { "errors": "Friendship not found." }, status: :not_found
     elsif target_friendship.length == 1
       friendship_to_delete = target_friendship[0]
-      friendship.to_delete.destroy
+      friendship_to_delete.destroy
       render json: User.find(params[:friend_id]), status: :ok
     else 
       render json: { "errors": "Something went wrong in our database. Please contact together.io support." }, status: 500
@@ -173,7 +201,10 @@ class UsersController < ApplicationController
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      # debugger
+      if params[:id] != "null"
+        @user = User.find(params[:id])
+      end
     end
 
     # Only allow a list of trusted parameters through.

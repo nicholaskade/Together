@@ -9,44 +9,39 @@ import Search from "./Search";
 
 import { ReactComponent as AppLogo } from "../together_logo.svg";
 
-function Header() {
+function Header({ cable }) {
+  const userState = useUser();
 
-    const userState = useUser();
-    console.log(useUser());
+  const header = userState.user ? (
+    <div id="header">
+      <div id="logo-container">
+        <Link to="/">
+          <AppLogo id="logo-svg" />
+        </Link>
+        <h1 id="logo-text">together.io</h1>
+      </div>
+      <div id="signed-out-header">
+        <Search />
+        <UserIcon />
+        <SignIn cable={cable} />
+      </div>
+    </div>
+  ) : (
+    <div id="header">
+      <div id="logo-container">
+        <Link to="/">
+          <AppLogo id="logo-svg" />
+        </Link>
+        <h1 id="logo-text">together.io</h1>
+      </div>
+      <div id="signed-out-header">
+        <SignIn cable={cable} />
+        <SignUp />
+      </div>
+    </div>
+  );
 
-    const header = 
-        userState.user ?
-                <div id="header">
-                    <div id="logo-container">
-                        <Link to="/">
-                            <AppLogo id="logo-svg"/>
-                        </Link>
-                        <h1 id="logo-text">together.io</h1>
-                    </div>
-                    <div id="signed-out-header">
-                        <Search />
-                        <UserIcon />
-                        <SignIn />
-                    </div>
-                </div>
-            :
-                <div id="header">
-                    <div id="logo-container">
-                        <Link to="/">
-                            <AppLogo id="logo-svg"/>
-                        </Link>
-                        <h1 id="logo-text">together.io</h1>
-                    </div>
-                    <div id="signed-out-header">
-                        <SignIn />
-                        <SignUp />
-                    </div>
-                </div>
-
-    return (
-        header
-    );
-
-};
+  return header;
+}
 
 export default Header;

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  mount ActionCable.server => "/cable"
+
   resources :milestones
   resources :opinions
   resources :comments
@@ -12,6 +15,7 @@ Rails.application.routes.draw do
   resources :chats
   resources :messages
 
+  get "/check_sign_in", to: "users#show"
   post "/signin", to: "sessions#create"
   delete "/signout", to: "sessions#destroy"
 
@@ -21,6 +25,7 @@ Rails.application.routes.draw do
   get "user/:id/opinions/:friend_id", to: "users#so_opinions"
   get "user/:id/dates/:friend_id", to: "users#dates"
   get "user/:id/make_significant/:friend_id", to: "users#make_so"
+  get "user/:id/friends_with_chats", to: "users#friends_with_chats"
 
   get "user/:id/posts", to: "posts#user_posts"
 

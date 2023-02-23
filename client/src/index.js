@@ -15,6 +15,7 @@ import { SelectedUserProvider } from './components/context/SelectedUserContext';
 import { ProfileProvider } from './components/context/ProfileContext';
 import { LikedPostsProvider } from './components/context/LikedPostsContext';
 import { DatesProvider } from './components/context/DatesContext';
+import { FriendsWithChatsProvider } from "./components/context/FriendsWithChatsContext";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -30,7 +31,9 @@ root.render(
               <ProfileProvider>
                 <LikedPostsProvider>
                   <DatesProvider>
-                    <App />
+                    <FriendsWithChatsProvider>
+                      <App />
+                    </FriendsWithChatsProvider>
                   </DatesProvider>
                 </LikedPostsProvider>
               </ProfileProvider>
@@ -42,7 +45,4 @@ root.render(
   </Router>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

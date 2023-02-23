@@ -5,155 +5,212 @@ import { useFriends } from "./context/FriendsContext";
 import { useUser } from "./context/UserContext";
 import { useProfileDispatch } from "./context/ProfileContext";
 import { ReactComponent as SearchButton } from "../search-button.svg";
+import { useFriendsDispatch } from "./context/FriendsContext";
 
 import Modal from "react-bootstrap/Modal";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
 function Search() {
-    const userState = useUser();
-    const [showSearch, setShowSearch] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [users, setUsers] = useState([]);
-    const [errors, setErrors] = useState([]);
-    const [showAll, setShowAll] = useState(false);
+  const uid = useUser().user.id;
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [users, setUsers] = useState([]);
+  const [errors, setErrors] = useState([]);
+  const [showAll, setShowAll] = useState(false);
 
-    const dispatch = useProfileDispatch();
-    const navigate = useNavigate();
+  const dispatch = useProfileDispatch();
+  const navigate = useNavigate();
+  const friendsDispatch = useFriendsDispatch();
 
-    useEffect(() => {
-        fetch("/users")
-        .then(response => {
-            if (response.ok) {
-                response.json().then(users => setUsers(users))
-            } else {
-                response.json().then(errors => setErrors(errors))
-            }
-        })
-    }, []);
+  useEffect(() => {
+    fetch("/users").then((response) => {
+      if (response.ok) {
+        response.json().then((users) => setUsers(users));
+      } else {
+        response.json().then((errors) => setErrors(errors));
+      }
+    });
 
-    function handleClose() {
-        setShowAll(false);
-    }
-
-    function handleClick(id) {
-        dispatch({
+    const mountFriends = async () => {
+      let response = await fetch(`http://localhost:3000/users/friends/${uid}`);
+      if (response.ok) {
+        response.json().then((friends) => {
+          friendsDispatch({
             type: "mount",
-            profile: id
+            friends: friends,
+          });
         });
-        navigate("/user-profile");
-        setShowSearch(false);
-        setSearchTerm("");
+      } else {
+        response.json().then((data) => setErrors(data.errors));
+      }
     };
 
-    const friends = useFriends().friends;
+    mountFriends();
+  }, []);
 
-    function handleShowSearch() {
-        setShowSearch(true);
-    };
+  function handleClose() {
+    setShowAll(false);
+  }
 
-    function handleCloseSearch() {
-        setShowSearch(false);
-    };
+  function handleClick(id) {
+    dispatch({
+      type: "mount",
+      profile: id,
+    });
+    navigate("/user-profile");
+    setShowSearch(false);
+    setSearchTerm("");
+  }
 
-    const renderFriends =
-        friends ?
-            friends.map((friend) => {
-                return (
-                    <div className="search-default-card" onClick={(e) => handleClick(friend.id)}>
-                        <img src={friend.profile_picture} alt={friend.full_name} className="friend-button" onClick={(e) => handleClick(friend.id)}/>
-                        <div className="search-card-names" onClick={(e) => handleClick(friend.id)}>
-                            <h6 onClick={(e) => handleClick(friend.id)}>{friend.full_name}</h6>
-                            <h6 onClick={(e) => handleClick(friend.id)}>{friend.username}</h6>
-                        </div>
-                    </div>
-                )
-            })
-                :
-            <></>
+  const friends = useFriends().friends;
 
-    const filteredUsers = users.filter( 
-        (user) => 
-            user.username.toLowerCase().includes(searchTerm.toLowerCase()) 
-                || 
-            user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) 
-    );
-        
+  function handleShowSearch() {
+    setShowSearch(true);
+  }
 
-    console.log(filteredUsers);
+  function handleCloseSearch() {
+    setShowSearch(false);
+  }
 
-    const renderUsers = 
-        users.length > 0 ?
-            filteredUsers.slice(0, 10).map( (user) => {
-                return (
-                    <div className="search-default-card" onClick={(e) => handleClick(user.id)}>
-                        <img src={user.profile_picture} alt={user.full_name} className="friend-button" onClick={(e) => handleClick(user.id)}/>
-                        <div onClick={(e) => handleClick(user.id)} className="search-card-names">
-                            <h6 onClick={(e) => handleClick(user.id)}>{user.full_name}</h6>
-                            <h6 onClick={(e) => handleClick(user.id)}>{user.username}</h6>
-                        </div>
-                    </div>
-                )
-            })
-                :
-            <></>
-    
-    const renderAllUsers = 
-        users.length > 0 ?
-            filteredUsers.map((user) => {
-                return (
-                    <div className="search-default-card" onClick={(e) => handleClick(user.id)}>
-                        <img src={user.profile_picture} alt={user.full_name} className="friend-button" onClick={(e) => handleClick(user.id)}/>
-                        <div onClick={(e) => handleClick(user.id)} className="search-card-names">
-                            <h6 onClick={(e) => handleClick(user.id)}>{user.full_name}</h6>
-                            <h6 onClick={(e) => handleClick(user.id)}>{user.username}</h6>
-                        </div>
-                    </div>
-                )
-            })
-                :
-            <></>
+  const renderFriends = friends ? (
+    friends.map((friend) => {
+      return (
+        <div
+          className="search-default-card"
+          onClick={(e) => handleClick(friend.id)}
+        >
+          <img
+            src={friend.profile_picture}
+            alt={friend.full_name}
+            className="friend-button"
+            onClick={(e) => handleClick(friend.id)}
+          />
+          <div
+            className="search-card-names"
+            onClick={(e) => handleClick(friend.id)}
+          >
+            <h6 onClick={(e) => handleClick(friend.id)}>{friend.full_name}</h6>
+            <h6 onClick={(e) => handleClick(friend.id)}>{friend.username}</h6>
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <></>
+  );
 
-    if (useFriends().friends) { 
+  const filteredUsers = users.filter(
+    (user) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const renderUsers =
+    users.length > 0 ? (
+      filteredUsers.slice(0, 10).map((user) => {
         return (
-            <>
-                <SearchButton onClick={() => handleShowSearch()} id="search-button"/>
-                <Offcanvas placement={"end"} show={showSearch} onHide={handleCloseSearch}>
-                    <Offcanvas.Header closeButton>
-                        <Offcanvas.Title>Search</Offcanvas.Title>
-                        <input type="text" value={searchTerm} id="search-bar" onChange={(e) => setSearchTerm(e.target.value)}/>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        {
-                            searchTerm === "" ? 
-                                friends ? 
-                                    <>
-                                        <h1>Friends</h1>
-                                        {renderFriends}
-                                    </>
-                                            :
-                                                <></>
-                                :
-                                    <>
-                                        <h1>Search Results</h1>
-                                        {renderUsers}
-                                        <p id="search-show-all" onClick={() => setShowAll(true)}>Show all results...</p>
-                                    </>
-                        }
-                    </Offcanvas.Body>
-                </Offcanvas>
-                
-                <Modal show={showAll} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Full Search Results</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {renderAllUsers}
-                    </Modal.Body>
-                    <Modal.Footer></Modal.Footer>
-                </Modal>
-            </>
+          <div
+            className="search-default-card"
+            onClick={(e) => handleClick(user.id)}
+          >
+            <img
+              src={user.profile_picture}
+              alt={user.full_name}
+              className="friend-button"
+              onClick={(e) => handleClick(user.id)}
+            />
+            <div
+              onClick={(e) => handleClick(user.id)}
+              className="search-card-names"
+            >
+              <h6 onClick={(e) => handleClick(user.id)}>{user.full_name}</h6>
+              <h6 onClick={(e) => handleClick(user.id)}>{user.username}</h6>
+            </div>
+          </div>
         );
-    };
-};
+      })
+    ) : (
+      <></>
+    );
+
+  const renderAllUsers =
+    users.length > 0 ? (
+      filteredUsers.map((user) => {
+        return (
+          <div
+            className="search-default-card"
+            onClick={(e) => handleClick(user.id)}
+          >
+            <img
+              src={user.profile_picture}
+              alt={user.full_name}
+              className="friend-button"
+              onClick={(e) => handleClick(user.id)}
+            />
+            <div
+              onClick={(e) => handleClick(user.id)}
+              className="search-card-names"
+            >
+              <h6 onClick={(e) => handleClick(user.id)}>{user.full_name}</h6>
+              <h6 onClick={(e) => handleClick(user.id)}>{user.username}</h6>
+            </div>
+          </div>
+        );
+      })
+    ) : (
+      <></>
+    );
+
+  if (useFriends().friends) {
+    return (
+      <>
+        <SearchButton onClick={() => handleShowSearch()} id="search-button" />
+        <Offcanvas
+          placement={"end"}
+          show={showSearch}
+          onHide={handleCloseSearch}
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Search</Offcanvas.Title>
+            <input
+              type="text"
+              value={searchTerm}
+              id="search-bar"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            {searchTerm === "" ? (
+              friends ? (
+                <>
+                  <p id="search-header">Your Friends</p>
+                  {renderFriends}
+                </>
+              ) : (
+                <></>
+              )
+            ) : (
+              <>
+                <p id="search-header">Search Results</p>
+                {renderUsers}
+                <p id="search-show-all" onClick={() => setShowAll(true)}>
+                  Show all results...
+                </p>
+              </>
+            )}
+          </Offcanvas.Body>
+        </Offcanvas>
+
+        <Modal show={showAll} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Full Search Results</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{renderAllUsers}</Modal.Body>
+          <Modal.Footer></Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
+}
 
 export default Search;

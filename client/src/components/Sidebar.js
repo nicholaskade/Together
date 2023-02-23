@@ -5,8 +5,6 @@ import FriendBubble from "./FriendBubble";
 
 function Sidebar() {
 
-    const uid = useUser().user.id;
-
     if (useUser().user) {
         return (
             <div id="friend-sidebar">

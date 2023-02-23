@@ -11,7 +11,6 @@ class PostsController < ApplicationController
   def comments
     post = @post
     comments = post.comments
-
     render json: comments
   end
 
